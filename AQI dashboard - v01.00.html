@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AQI Monitor Dynamic</title>
+<style>
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f2f2f2;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+/* TOP SECTION */
+.top {
+    color: white;
+    text-align: center;
+    padding: 30px 20px;
+    transition: background 1s;
+}
+
+.top h1 {
+    margin: 0;
+    font-size: 42px;
+    transition: all 1s;
+}
+
+.top p {
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+/* PARAMETER GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    padding: 20px;
+}
+
+.card {
+    background: #f7f9fb;
+    border-radius: 15px;
+    text-align: center;
+    padding: 15px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    transition: transform 0.5s, box-shadow 0.5s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #555;
+}
+
+.value {
+    font-size: 32px;
+    margin: 10px 0;
+    font-weight: bold;
+    transition: all 0.5s ease-in-out;
+}
+
+.status {
+    font-size: 14px;
+    font-weight: bold;
+    transition: color 0.5s;
+}
+
+/* ALERT BAR */
+.alert {
+    margin: 10px 20px 20px;
+    background: #ffd54f;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+/* FOOTER */
+.footer {
+    display: flex;
+    justify-content: space-between;
+    background: #1faa59;
+    color: white;
+    padding: 12px 20px;
+    font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media(max-width: 700px){
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {opacity:0;}
+    to {opacity:1;}
+}
+
+@keyframes pulse {
+    0%, 100% {opacity: 1;}
+    50% {opacity: 0.6;}
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- TOP -->
+    <div class="top" id="top-section">
+        <h1 id="aqi-status">🟢 AIR QUALITY: GOOD 😊</h1>
+        <p id="aqi-message">Great day to play outside! 🌳</p>
+    </div>
+
+    <!-- PARAMETERS -->
+    <div class="grid">
+
+        <div class="card">
+            <h3>PM2.5</h3>
+            <div class="value" id="pm25">35</div>
+            <div class="status" id="pm25-status">LOW</div>
+        </div>
+
+        <div class="card">
+            <h3>CO₂</h3>
+            <div class="value" id="co2">680 ppm</div>
+            <div class="status" id="co2-status">GOOD</div>
+        </div>
+
+        <div class="card">
+            <h3>Temperature</h3>
+            <div class="value" id="temp">25°C</div>
+            <div class="status" id="temp-status">COMFORT</div>
+        </div>
+
+        <div class="card">
+            <h3>Humidity</h3>
+            <div class="value" id="hum">55%</div>
+            <div class="status" id="hum-status">NORMAL</div>
+        </div>
+
+    </div>
+
+    <!-- ALERT -->
+    <div class="alert" id="alert-msg">
+        ⚠️ Check AC Filters for Clean Air!
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div>Green Valley School</div>
+        <div>Indoor Air Quality Monitor</div>
+    </div>
+
+</div>
+
+<script>
+// Random dummy values generator
+function getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Update UI every 2 seconds
+setInterval(() => {
+    // Generate dummy data
+    const pm = getRandom(20, 150);
+    const co2 = getRandom(400, 1500);
+    const temp = getRandom(20, 32);
+    const hum = getRandom(35, 70);
+
+    // Update values
+    document.getElementById("pm25").innerText = pm;
+    document.getElementById("co2").innerText = co2 + " ppm";
+    document.getElementById("temp").innerText = temp + "°C";
+    document.getElementById("hum").innerText = hum + "%";
+
+    // Update PM2.5 status color
+    const pmStatus = document.getElementById("pm25-status");
+    if(pm <= 50) { pmStatus.innerText = "LOW"; pmStatus.style.color="green"; }
+    else if(pm <= 100) { pmStatus.innerText = "MODERATE"; pmStatus.style.color="orange"; }
+    else { pmStatus.innerText = "HIGH"; pmStatus.style.color="red"; }
+
+    // Update CO2 status color
+    const coStatus = document.getElementById("co2-status");
+    if(co2 <= 800) { coStatus.innerText = "GOOD"; coStatus.style.color="green"; }
+    else if(co2 <= 1200) { coStatus.innerText = "MODERATE"; coStatus.style.color="orange"; }
+    else { coStatus.innerText = "HIGH"; coStatus.style.color="red"; }
+
+    // Temperature status
+    const tStatus = document.getElementById("temp-status");
+    if(temp>=22 && temp<=28){ tStatus.innerText="COMFORT"; tStatus.style.color="green"; }
+    else if(temp<22){ tStatus.innerText="COOL"; tStatus.style.color="blue"; }
+    else{ tStatus.innerText="HOT"; tStatus.style.color="red"; }
+
+    // Humidity status
+    const hStatus = document.getElementById("hum-status");
+    if(hum>=40 && hum<=60){ hStatus.innerText="NORMAL"; hStatus.style.color="green"; }
+    else if(hum<40){ hStatus.innerText="LOW"; hStatus.style.color="blue"; }
+    else{ hStatus.innerText="HIGH"; hStatus.style.color="orange"; }
+
+    // Update AQI status (based on PM2.5)
+    const top = document.getElementById("top-section");
+    const aqiStatus = document.getElementById("aqi-status");
+    const aqiMsg = document.getElementById("aqi-message");
+
+    if(pm<=50){
+        aqiStatus.innerText = "🟢 AIR QUALITY: GOOD 😊";
+        aqiMsg.innerText = "Great day to play outside! 🌳";
+        top.style.background = "linear-gradient(135deg, #1faa59, #39d98a)";
+    } else if(pm<=100){
+        aqiStatus.innerText = "🟡 AIR QUALITY: MODERATE ⚠️";
+        aqiMsg.innerText = "Play with caution!";
+        top.style.background = "linear-gradient(135deg, #f5d14f, #f7bb3b)";
+    } else if(pm<=200){
+        aqiStatus.innerText = "🟠 AIR QUALITY: POOR 😷";
+        aqiMsg.innerText = "Stay indoors if possible!";
+        top.style.background = "linear-gradient(135deg, #f7993b, #f4511e)";
+    } else {
+        aqiStatus.innerText = "🔴 AIR QUALITY: VERY POOR ☠️";
+        aqiMsg.innerText = "Avoid outdoor activities!";
+        top.style.background = "linear-gradient(135deg, #d50000, #9b0000)";
+    }
+
+}, 2000);
+</script>
+
+</body>
+</html>
